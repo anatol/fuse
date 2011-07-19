@@ -46,3 +46,7 @@ example/.libs/
 example/hello
 example/hello_ll
 example/null
+example/fioc
+example/fioclient
+example/fsel
+example/fselclient
