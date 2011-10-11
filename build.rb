@@ -41,7 +41,15 @@ unless File.exists?('Makefile') then
     flags += "CFLAGS='#{archs} -mmacosx-version-min=10.5' LDFLAGS='#{archs}' --disable-dependency-tracking"
   end
 
-  system('autoreconf -f -i -Wall,no-obsolete') or abort
+  # Check if Homebrew is installed
+  if File.exists?('/usr/local/Cellar/gettext/0.18.1.1/share/aclocal/') then
+    aclocal_flags = 'ACLOCAL="aclocal -I/usr/local/Cellar/gettext/0.18.1.1/share/aclocal/"'
+  else
+    # Otherwise we need to have macports with following packages installed:
+    #  libtool autoconf gettext pkgconfig
+  end
+
+  system("#{aclocal_flags} autoreconf -f -i -Wall,no-obsolete") or abort
   system("./configure #{flags} --disable-static") or abort
 end
 
