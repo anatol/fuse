@@ -97,15 +97,9 @@ AM_CONDITIONAL(BSD, test "$arch" = bsd)
 util_linux_ok=yes
 if test "$arch" = linux -a "$cross_compiling" != "yes"; then
 	AC_MSG_CHECKING([if umount supports --fake --no-canonicalize])
-	# exit code of umount is 1 if option is unrecognised, 2 otherwise
-	umount --fake --no-canonicalize > /dev/null 2>&1
-	if test $? != 1; then
-		AC_MSG_RESULT([yes])
-	else
-		firstline=`umount --fake --no-canonicalize 2>&1 | head -1`
-		AC_MSG_RESULT([$firstline])
-		util_linux_ok=no
-	fi
+	mount_version=`mount --version | grep -o -E "[0-9.]*" | head -1`
+	AX_COMPARE_VERSION([$mount_version], [lt], [2.18], [util_linux_ok=no])
+	AC_MSG_RESULT([$util_linux_ok])
 fi
 
 AC_CONFIG_FILES([fuse.pc Makefile lib/Makefile util/Makefile example/Makefile include/Makefile doc/Makefile])
